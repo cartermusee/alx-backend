@@ -44,5 +44,10 @@ class Server:
         assert isinstance(page, int) > 0, "Must be an integer and greater than 0"
         assert isinstance(page_size, int) > 0, "Must be an integer and greater than 0"
         dataset = self.dataset()
+        total_rows = len(dataset)
+
         start, end = index_range(page, page_size)
+        end = min(end, total_rows)
+        if start >= end:
+            return []
         return dataset[start:end]
