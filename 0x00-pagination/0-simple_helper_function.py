@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """module for simpler helper function"""
+from typing import Tuple
 
 
-def index_range(page, page_size):
+def index_range(page: int, page_size: int) -> Tuple[int, int]:
     """list for those particular pagination
     Keyword arguments:
     page: current page
