@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""module for with a method for hyperr pagination"""
 import csv
 import math
 from typing import List, Tuple
