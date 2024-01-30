@@ -44,25 +44,32 @@ class Server:
         """
         assert isinstance(page, int) and page > 0
         assert isinstance(page_size, int) and page_size > 0
-        self.dataset()
-        if self.dataset() is None:
+        data = self.dataset()
+        if not data:
             return []
-        indexrange = index_range(page, page_size)
-        return self.dataset()[indexrange[0]:indexrange[1]]
+        start, end = index_range(page, page_size)
+        return data[start:end]
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """method for hyper pagination"""
+        """simple pagination
+        Keyword arguments:
+        page: current page
+        page_size: content per page
+        Return: dataset
+        """
         total_items = len(self.dataset())
-        total_pages = math.ceil(total_items/page_size)
+        total_pages = math.ceil(total_items / page_size)
         page_data = self.get_page(page, page_size)
 
         def next_page():
+            """method for next page"""
             if len(self.get_page(page + 1, page_size)) > 0:
                 return page + 1
             else:
                 return None
 
         def prev():
+            """method for previous page"""
             if page > 1:
                 return page - 1
             else:
