@@ -6,8 +6,11 @@ BaseCaching = __import__('base_caching').BaseCaching
 class BasicCache(BaseCaching):
     """class for basic cache"""
     def put(self, key, item):
-        """
-        Add an item in the cache
+        """to put item in cache
+        Keyword arguments:
+        key: the key to put
+        item: value of the key
+        Return: return_description
         """
         if key is None and item is None:
             pass
@@ -16,6 +19,8 @@ class BasicCache(BaseCaching):
 
     def get(self, key):
         """geta an item in cache
+        arg:
+        key: the keyy to check for value
         """
         if key is None or key not in self.cache_data:
             return None
