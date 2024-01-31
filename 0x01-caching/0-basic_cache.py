@@ -13,7 +13,7 @@ class BasicCache(BaseCaching):
         Return: return_description
         """
         if key is None and item is None:
-            pass
+            return
         else:
             self.cache_data[key] = item
 
