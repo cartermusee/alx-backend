@@ -7,7 +7,6 @@ class LIFOCache(BaseCaching):
     """class for lifocaching"""
     def __init__(self):
         super().__init__()
-        self.temp_data = []
 
     def put(self, key, item):
         """to put item in cache
@@ -19,16 +18,12 @@ class LIFOCache(BaseCaching):
         if key is None or item is None:
             return
 
-        if key in self.cache_data:
-            self.temp_data.remove(key)
-
-        self.cache_data[key] = item
-        self.temp_data.append(key)
 
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            last_item = self.temp_data.pop()
+            last_item = list(self.cache_data.keys())[-1]
             del self.cache_data[last_item]
             print("DISCARD: {}".format(last_item))
+        self.cache_data[key] = item
 
     def get(self, key):
         """geta an item in cache
