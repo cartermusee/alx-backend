@@ -4,9 +4,6 @@ from flask import Flask, render_template, request
 from flask_babel import Babel, gettext
 
 
-app = Flask(__name__)
-
-
 class Config:
     """class for babels configs"""
     LANGUAGES = ["en", "fr"]
@@ -14,19 +11,19 @@ class Config:
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
-babel = Babel(app)
-
+app = Flask(__name__)
 app.config.from_object(Config)
+babel = Babel(app)
 
 
 @babel.localeselector
-def get_locale():
+def get_locale() -> str:
     """get locale func to get the language"""
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 @app.route("/")
-def index():
+def index() -> str:
     """rendering the templates"""
     return render_template("3-index.html")
 
