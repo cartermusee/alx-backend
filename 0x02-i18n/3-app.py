@@ -29,7 +29,7 @@ def get_locale():
 def index():
     """rendering the templates"""
     title = gettext('Welcome to Holberton ')
-    return render_template("0-index.html", title=title)
+    return render_template("0-index.html", title = title)
 
 
 if __name__ == '__main__':
