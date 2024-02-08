@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """module for flask app and initraing a babel"""
 from flask import Flask, render_template, request, g
-from flask_babel import Babel
+from flask_babel import Babel, gettext
+import pytz
 
 
 class Config:
@@ -22,7 +23,14 @@ def get_locale() -> str:
     lc = request.args.get('locale')
     if lc in app.config['LANGUAGES']:
         return lc
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    if g.user and 'locale' in g.user\
+            and g.user['locale'] in app.config['LANGUAGES']:
+        return g.user['locale']
+
+    req_header = request.accept_languages.best_match(app.config['LANGUAGES'])
+    if req_header:
+        return req_header
+    return app.config['BABEL_DEFAULT_LOCALE']
 
 
 users = {
@@ -48,7 +56,25 @@ def before_request():
 def index() -> str:
     """rendering the templates"""
 
-    return render_template("5-index.html")
+    return render_template("7-index.html")
+
+
+@babel.timezoneselector
+def get_timezone():
+    timezone = request.args.get('timezone')
+    if timezone:
+        try:
+            pytz.timezone(timezone)
+            return timezone
+        except pytz.exceptions.UnknownTimeZoneError:
+            pass
+    if g.user and 'timezone' in g.user:
+        try:
+            pytz.timezone(g.user['timezone'])
+            return g.user['timezone']
+        except pytz.exceptions.UnknownTimeZoneError:
+            pass
+    return app.config['BABEL_DEFAULT_TIMEZONE']
 
 
 if __name__ == '__main__':
