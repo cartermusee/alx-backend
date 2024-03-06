@@ -1,0 +1,44 @@
+const { expect } = require('chai');
+const sinon = require('sinon');
+const kue = require('kue');
+const createPushNotificationsJobs = require('./createPushNotificationsJobs');
+
+describe('createPushNotificationsJobs', () => {
+    let queue;
+
+    beforeEach(() => {
+        queue = kue.createQueue();
+        queue.testMode.enter();
+    });
+
+    afterEach(() => {
+        queue.testMode.clear();
+        queue.testMode.exit();
+    });
+
+    it('should throw an error if jobs is not an array', () => {
+        expect(() => {
+            createPushNotificationsJobs({}, queue);
+        }).to.throw('Jobs is not an array');
+    });
+
+    it('should create jobs and handle their events correctly', () => {
+        const jobs = [
+            { data: { message: 'Job 1' } },
+            { data: { message: 'Job 2' } },
+            { data: { message: 'Job 3' } }
+        ];
+
+        createPushNotificationsJobs(jobs, queue);
+        jobs.forEach(jobData => {
+            const job = queue.testMode.jobs.find(j => j.type === 'push_notification_code_3' && j.data.message === jobData.data.message);
+            expect(job).to.exist;
+
+            job.emit('complete');
+
+            job.emit('failed', 'Error message');
+
+            job.emit('progress', 50);
+        });
+    });
+});
